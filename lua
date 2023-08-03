@@ -1,4 +1,3 @@
-
 local repo = 'https://raw.githubusercontent.com/violin-suzutsuki/LinoriaLib/main/'
 
 local Library = loadstring(game:HttpGet(repo .. 'Library.lua'))()
@@ -21,6 +20,8 @@ local SaveManager = loadstring(game:HttpGet(repo .. 'addons/SaveManager.lua'))()
 			TeamCheck = true,
 			VisibleCheck = true,
 			Prediction = true,
+			Snaplines = true,
+			SnaplinesColor = Color3.fromRGB(206,250,5)
 		}
 
 local _Camera = getrenv()._G.modules.Camera
@@ -1211,6 +1212,9 @@ game:GetService("Workspace").ChildAdded:Connect(function(child)
     end
 end)
 
+local FovSnapline = Functions:Draw("Line",{Transparency=1,Thickness=1,Visible=false,Color = SilentSettings["SnaplinesColor"]})
+local FovCircle = Functions:Draw("Circle",{Color=Fov.Settings.FovColor,Radius=Fov.Settings.FovSize,NumSides=90,Thickness=1,Transparency=Fov.Settings.FovTransparency,ZIndex=2,Visible=false})
+
 local Window = Library:CreateWindow({
 
     Title = 'Fluent.gg | Public',
@@ -1229,7 +1233,7 @@ local Window = Library:CreateWindow({
 		local GunModsTab = GunModsTabbox:AddTab('Modifications')
 		local HitBoxSector = CombatTab:AddLeftGroupbox('HitBox')
 
-		SilentAimSector:AddToggle('SilentAim_Enabled', { Text = 'Enable Silent', Default = true, Tooltip = nil, })
+		SilentAimSector:AddToggle('SilentAim_Enabled', { Text = 'Enable SilentAim', Default = true, Tooltip = nil, })
 		Toggles.SilentAim_Enabled:OnChanged(function()
 			_Cameras["Toggle"] = Toggles.SilentAim_Enabled.Value
 			print(_Cameras["Toggle"])
@@ -1301,12 +1305,36 @@ SilentAimSector:AddToggle('Team_Check', { Text = 'Team Check', Default = true, T
 		Toggles.Team_Check:OnChanged(function()
 			SilentSettings["TeamCheck"] = Toggles.Team_Check.Value;
 		end)
+SilentAimSector:AddToggle('snapLine', { Text = 'Snaplines', Default = false, Tooltip = nil, })
+		Toggles.snapLine:OnChanged(function()
+			SilentSettings["Snaplines"] = Toggles.snapLine.Value;
+		end)
 SilentAimSector:AddToggle('Pred', { Text = 'Prediction', Default = true, Tooltip = nil, })
 		Toggles.Pred:OnChanged(function()
 			SilentSettings["Prediction"] = Toggles.Pred.Value;
 		end)
 
-		--local HitBoxSector = CombatTab:AddLeftGroupbox('HitBox')
+game:GetService("RunService").RenderStepped:Connect(function()
+    if getClosestPlayerToCursor() ~= nil and SilentSettings["Snaplines"] == true and _Cameras["Toggle"] then
+        local p,t = getClosestPlayerToCursor()
+        FovSnapline.Visible = true
+        local Position,OnScreen = Camera:WorldToViewportPoint(getClosestPlayerToCursor()[SilentSettings["AimPart"]]:GetPivot().p+Functions:Predict());
+        if SilentSettings["TeamCheck"] == true and getClosestPlayerToCursor().Head.Teamtag.Enabled == false and OnScreen == true then
+            FovSnapline.To = Position
+        elseif OnScreen == true then
+            FovSnapline.To = Position
+        end
+    else
+        FovSnapline.Visible = false
+    end
+    if Fov.Settings["Position"] == "Screen" then
+        FovSnapline.From=FovCircle.Position
+    else
+        local MousePos = Camera.WorldToViewportPoint(Camera,game.Players.LocalPlayer:GetMouse().Hit.p)
+        FovCircle.Position = Vector2.new(MousePos.X,MousePos.Y)
+        FovSnapline.From=FovCircle.Position
+    end
+end)
 
 		local HitBX = 4
 		local HitBY = 5
@@ -1394,7 +1422,7 @@ Toggles.LootAll:OnChanged(function()
 end)
 
 local alwaysGroundedToggle = false
-miscCombatTab:AddToggle('jumpShoot',{Text='Jump shoot',Default=false}):OnChanged(function(Value)
+miscCombatTab:AddToggle('jumpShoot',{Text='Air Shoot',Default=false}):OnChanged(function(Value)
 	alwaysGroundedToggle = Value
 end)
 local jumpShoot; jumpShoot = hookfunction(getrenv()._G.modules.Character.IsGrounded, function(...)
@@ -1406,7 +1434,7 @@ local jumpShoot; jumpShoot = hookfunction(getrenv()._G.modules.Character.IsGroun
     end
 end)
 
-miscCombatTab:AddToggle('', {Text = "Jump Crouch",Default = false,}):AddKeyPicker('JumpCrouchKey', {Default='Q',SyncToggleState=true,Mode='Toggle',Text='Jump Crouch',NoUI=false})
+miscCombatTab:AddToggle('', {Text = "Jump Crouch",Default = false,}):AddKeyPicker('JumpCrouchKey', {Default='Q',SyncToggleState=true,Mode='Toggle',Text='Auto-walk',NoUI=false})
   local stoprun = false
   task.spawn(function()
   while true do
@@ -1528,8 +1556,6 @@ local spinHookSpeed = 1
         end
         return Spon1(self, unpack(args))
     end)
-
-local FovCircle = Functions:Draw("Circle",{Color=Fov.Settings.FovColor,Radius=Fov.Settings.FovSize,NumSides=90,Thickness=1,Transparency=Fov.Settings.FovTransparency,ZIndex=2,Visible=false})
 
 local FOVTabbox = CombatTab:AddRightTabbox()
 local FovTab = FOVTabbox:AddTab('FOV')
@@ -1900,7 +1926,7 @@ chatSpammerTab:AddSlider('spammer_Delay', {Text='Spammer delay',Default=3,Min=1,
 end)
 
 local beforeNameText = 'get rekt'
-local beforeDistanceText = 'i demolished you from'
+local beforeDistanceText = 'i just got you from'
 local afterDisText = 'Fluent.gg | Public'
 local trashTalkToggle = false
 local trashRNG = false
@@ -2060,14 +2086,17 @@ game.Players.PlayerRemoving:Connect(function()
     playerNum = tonumber(#game.Players:GetPlayers())
 end)
 
-Library:SetWatermark('Fluent.gg Public | '.. playerNum .. ' players')
+Library:SetWatermark('Fluent.gg | Public | '.. playerNum .. ' players')
 
 Library.KeybindFrame.Visible = true;
 
 Library:OnUnload(function()
     print('Unloaded!')
+    for i,v in pairs(Toggles) do
+    v:SetValue(false)
     Library:SetWatermarkVisibility(false)
     Library.Unloaded = true
+    end
 end)
 
 local MenuGroup = Tabs['UI Settings']:AddLeftGroupbox('Menu')
@@ -2080,7 +2109,7 @@ ThemeManager:SetLibrary(Library)
 SaveManager:SetLibrary(Library)
 SaveManager:IgnoreThemeSettings() 
 SaveManager:SetIgnoreIndexes({ 'MenuKeybind' }) 
-ThemeManager:SetFolder('Fluent.gg')
+ThemeManager:SetFolder('Fluentgg')
 SaveManager:SetFolder('Fluentgg/Configs')
 SaveManager:BuildConfigSection(Tabs['UI Settings']) 
 ThemeManager:ApplyToTab(Tabs['UI Settings'])
