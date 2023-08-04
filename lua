@@ -1905,10 +1905,11 @@ end)
 
 local MiscTab = Window:AddTab('Misc')
 
+local Xray = MiscTab:AddLeftGroupbox('Xray')
 
 local XRAY22 = false
-MiscTab:AddToggle("XRAY", { Text = "XRAY", Default = false })
-	:AddKeyPicker("XRAYKey", { Default = "Z", SyncToggleState = true, Mode = "Toggle", Text = "XRAY", NoUI = false })
+Xray:AddToggle("XRAY", { Text = "XRAY", Default = false })
+	:AddKeyPicker("XRAYKey", { Default = "T", SyncToggleState = true, Mode = "Toggle", Text = "XRAY", NoUI = false })
 	:OnChanged(function()
 		XRAY22 = Toggles.XRAY.Value
 		if XRAY22 then
