@@ -1233,7 +1233,7 @@ local Window = Library:CreateWindow({
 		local GunModsTab = GunModsTabbox:AddTab('Modifications')
 		local HitBoxSector = CombatTab:AddLeftGroupbox('HitBox')
 
-		SilentAimSector:AddToggle('SilentAim_Enabled', { Text = 'Enable SilentAim', Default = true, Tooltip = nil, })
+		SilentAimSector:AddToggle('SilentAim_Enabled', { Text = 'Enable SilentAim', Default = false, Tooltip = nil, })
 		Toggles.SilentAim_Enabled:OnChanged(function()
 			_Cameras["Toggle"] = Toggles.SilentAim_Enabled.Value
 			print(_Cameras["Toggle"])
@@ -1340,7 +1340,7 @@ end)
 		local HitBY = 5
 		local HitBZ = 2.5
 
-		HitBoxSector:AddToggle('EnabledHB', { Text = 'Enabled', Default = true, Tooltip = nil, })
+		HitBoxSector:AddToggle('EnabledHB', { Text = 'Enabled', Default = false, Tooltip = nil, })
 		Toggles.EnabledHB:OnChanged(function(EnabledHBB)
 			if EnabledHBB == true then
 				for v, i in pairs(workspace:GetChildren()) do
@@ -1904,6 +1904,321 @@ sethiddenproperty(game:GetService("Lighting"),"Ambient",Color3.fromRGB(200,200,2
 end)
 
 local MiscTab = Window:AddTab('Misc')
+
+
+local CustomHitsoundsTabBox = MiscTab:AddLeftTabbox("Custom Hitsounds")
+local PlayerHitsoundsTab = CustomHitsoundsTabBox:AddTab("Player Hitsounds")
+local NatureHitsoundsTab = CustomHitsoundsTabBox:AddTab("Nature Hitsounds")
+
+local sounds = {
+	["Defualt Headshot Hit"] = "rbxassetid://9119561046",
+	["Defualt Body Hit"] = "rbxassetid://9114487369",
+	["Defualt Wood Hit"] = "rbxassetid://9125573608",
+	["Defualt Rock Hit"] = "rbxassetid://9118630389",
+	Neverlose = "rbxassetid://8726881116",
+	Gamesense = "rbxassetid://4817809188",
+	One = "rbxassetid://7380502345",
+	Bell = "rbxassetid://6534947240",
+	Rust = "rbxassetid://1255040462",
+	TF2 = "rbxassetid://2868331684",
+	Slime = "rbxassetid://6916371803",
+	["Among Us"] = "rbxassetid://5700183626",
+	Minecraft = "rbxassetid://4018616850",
+	["CS:GO"] = "rbxassetid://6937353691",
+	Saber = "rbxassetid://8415678813",
+	Baimware = "rbxassetid://3124331820",
+	Osu = "rbxassetid://7149255551",
+	["TF2 Critical"] = "rbxassetid://296102734",
+	Bat = "rbxassetid://3333907347",
+	["Call of Duty"] = "rbxassetid://5952120301",
+	Bubble = "rbxassetid://6534947588",
+	Pick = "rbxassetid://1347140027",
+	Pop = "rbxassetid://198598793",
+	Bruh = "rbxassetid://4275842574",
+	Bamboo = "rbxassetid://3769434519",
+	Crowbar = "rbxassetid://546410481",
+	Weeb = "rbxassetid://6442965016",
+	Beep = "rbxassetid://8177256015",
+	Bambi = "rbxassetid://8437203821",
+	Stone = "rbxassetid://3581383408",
+	["Old Fatality"] = "rbxassetid://6607142036",
+	Click = "rbxassetid://8053704437",
+	Ding = "rbxassetid://7149516994",
+	Snow = "rbxassetid://6455527632",
+	Laser = "rbxassetid://7837461331",
+	Mario = "rbxassetid://2815207981",
+	Steve = "rbxassetid://4965083997",
+	Snowdrake = "rbxassetid://7834724809",
+}
+
+local SoundService = game:GetService("SoundService")
+
+SoundService.PlayerHitHeadshot.Volume = 5
+SoundService.PlayerHitHeadshot.Pitch = 1
+SoundService.PlayerHitHeadshot.EqualizerSoundEffect.HighGain = -2
+
+-- GAME
+PlayerHitsoundsTab:AddToggle("Enabled_Toggle1", { Text = "Enabled", Default = false })
+
+PlayerHitsoundsTab:AddDropdown(
+	"HeadshotHit",
+	{
+		Values = {
+			"Defualt Headshot Hit",
+			"Neverlose",
+			"Gamesense",
+			"One",
+			"Bell",
+			"Rust",
+			"TF2",
+			"Slime",
+			"Among Us",
+			"Minecraft",
+			"CS:GO",
+			"Saber",
+			"Baimware",
+			"Osu",
+			"TF2 Critical",
+			"Bat",
+			"Call of Duty",
+			"Bubble",
+			"Pick",
+			"Pop",
+			"Bruh",
+			"Bamboo",
+			"Crowbar",
+			"Weeb",
+			"Beep",
+			"Bambi",
+			"Stone",
+			"Old Fatality",
+			"Click",
+			"Ding",
+			"Snow",
+			"Laser",
+			"Mario",
+			"Steve",
+			"Snowdrake",
+		},
+		Default = 1,
+		Multi = false,
+		Text = "Head Hitsound:",
+	}
+)
+Options.HeadshotHit:OnChanged(function()
+	local soundId = sounds[Options.HeadshotHit.Value]
+	game:GetService("SoundService").PlayerHitHeadshot.SoundId = soundId
+end)
+
+PlayerHitsoundsTab
+	:AddSlider("Volume_Slider", { Text = "Volume", Default = 5, Min = 0, Max = 10, Rounding = 0, Compact = true })
+	:OnChanged(function(vol)
+		SoundService.PlayerHitHeadshot.Volume = vol
+	end)
+
+PlayerHitsoundsTab
+	:AddSlider("Pitch_Slider", { Text = "Pitch", Default = 1, Min = 0, Max = 2, Rounding = 1, Compact = true })
+	:OnChanged(function(pich)
+		SoundService.PlayerHitHeadshot.Pitch = pich
+	end)
+--
+PlayerHitsoundsTab:AddToggle("Enabled_Toggle2", { Text = "Enabled", Default = false })
+
+PlayerHitsoundsTab:AddDropdown(
+	"Hit",
+	{
+		Values = {
+			"Defualt Body Hit",
+			"Neverlose",
+			"Gamesense",
+			"One",
+			"Bell",
+			"Rust",
+			"TF2",
+			"Slime",
+			"Among Us",
+			"Minecraft",
+			"CS:GO",
+			"Saber",
+			"Baimware",
+			"Osu",
+			"TF2 Critical",
+			"Bat",
+			"Call of Duty",
+			"Bubble",
+			"Pick",
+			"Pop",
+			"Bruh",
+			"Bamboo",
+			"Crowbar",
+			"Weeb",
+			"Beep",
+			"Bambi",
+			"Stone",
+			"Old Fatality",
+			"Click",
+			"Ding",
+			"Snow",
+			"Laser",
+			"Mario",
+			"Steve",
+			"Snowdrake",
+		},
+		Default = 1,
+		Multi = false,
+		Text = "Body Hitsound:",
+	}
+)
+Options.Hit:OnChanged(function()
+	local soundId = sounds[Options.Hit.Value]
+	game:GetService("SoundService").PlayerHit2.SoundId = soundId
+end)
+
+PlayerHitsoundsTab
+	:AddSlider("Volume_Slider", { Text = "Volume", Default = 5, Min = 0, Max = 10, Rounding = 0, Compact = true })
+	:OnChanged(function(vole)
+		SoundService.PlayerHit2.Volume = vole
+	end)
+
+PlayerHitsoundsTab
+	:AddSlider("Pitch_Slider", { Text = "Pitch", Default = 1, Min = 0, Max = 2, Rounding = 1, Compact = true })
+	:OnChanged(function(piche)
+		SoundService.PlayerHit2.Pitch = piche
+	end)
+
+--* Nature Hitsounds *--
+
+NatureHitsoundsTab:AddToggle("Enabled_Toggle2", { Text = "Enabled", Default = false })
+
+NatureHitsoundsTab:AddDropdown(
+	"WoodHit",
+	{
+		Values = {
+			"Defualt Wood Hit",
+			"Neverlose",
+			"Gamesense",
+			"One",
+			"Bell",
+			"Rust",
+			"TF2",
+			"Slime",
+			"Among Us",
+			"Minecraft",
+			"CS:GO",
+			"Saber",
+			"Baimware",
+			"Osu",
+			"TF2 Critical",
+			"Bat",
+			"Call of Duty",
+			"Bubble",
+			"Pick",
+			"Pop",
+			"Bruh",
+			"Bamboo",
+			"Crowbar",
+			"Weeb",
+			"Beep",
+			"Bambi",
+			"Stone",
+			"Old Fatality",
+			"Click",
+			"Ding",
+			"Snow",
+			"Laser",
+			"Mario",
+			"Steve",
+			"Snowdrake",
+		},
+		Default = 1,
+		Multi = false,
+		Text = "Wood Hitsound:",
+	}
+)
+Options.WoodHit:OnChanged(function()
+	local soundId = sounds[Options.WoodHit.Value]
+	game:GetService("SoundService").WoodHit.SoundId = soundId
+end)
+
+NatureHitsoundsTab
+	:AddSlider("Volume_Slider", { Text = "Volume", Default = 5, Min = 0, Max = 10, Rounding = 0, Compact = true })
+	:OnChanged(function(vole)
+		SoundService.WoodHit.Volume = vole
+	end)
+
+NatureHitsoundsTab
+	:AddSlider("Pitch_Slider", { Text = "Pitch", Default = 1, Min = 0, Max = 2, Rounding = 1, Compact = true })
+	:OnChanged(function(piche)
+		SoundService.WoodHit.Pitch = piche
+	end)
+--
+NatureHitsoundsTab:AddToggle("Enabled_Toggle1", { Text = "Enabled", Default = false })
+
+NatureHitsoundsTab:AddDropdown(
+	"RockHit",
+	{
+		Values = {
+			"Defualt Rock Hit",
+			"Neverlose",
+			"Gamesense",
+			"One",
+			"Bell",
+			"Rust",
+			"TF2",
+			"Slime",
+			"Among Us",
+			"Minecraft",
+			"CS:GO",
+			"Saber",
+			"Baimware",
+			"Osu",
+			"TF2 Critical",
+			"Bat",
+			"Call of Duty",
+			"Bubble",
+			"Pick",
+			"Pop",
+			"Bruh",
+			"Bamboo",
+			"Crowbar",
+			"Weeb",
+			"Beep",
+			"Bambi",
+			"Stone",
+			"Old Fatality",
+			"Click",
+			"Ding",
+			"Snow",
+			"Laser",
+			"Mario",
+			"Steve",
+			"Snowdrake",
+		},
+		Default = 1,
+		Multi = false,
+		Text = "Rock Hitsound:",
+	}
+)
+Options.RockHit:OnChanged(function()
+	local soundId = sounds[Options.RockHit.Value]
+	game:GetService("SoundService").RockHit.SoundId = soundId
+end)
+
+NatureHitsoundsTab
+	:AddSlider("Volume_Slider", { Text = "Volume", Default = 5, Min = 0, Max = 10, Rounding = 0, Compact = true })
+	:OnChanged(function(vol)
+		SoundService.RockHit.Volume = vol
+	end)
+
+NatureHitsoundsTab
+	:AddSlider("Pitch_Slider", { Text = "Pitch", Default = 1, Min = 0, Max = 2, Rounding = 1, Compact = true })
+	:OnChanged(function(pich)
+		SoundService.RockHit.Pitch = pich
+	end)
+
+
+
+
 local chatSpammerTab = MiscTab:AddLeftGroupbox('Chat Spammer')
 
 local spammerToggle = false
