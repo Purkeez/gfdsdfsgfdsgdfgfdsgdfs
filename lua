@@ -1906,6 +1906,30 @@ end)
 local MiscTab = Window:AddTab('Misc')
 
 
+local XRAY22 = false
+MiscTab:AddToggle("XRAY", { Text = "XRAY", Default = false })
+	:AddKeyPicker("XRAYKey", { Default = "Z", SyncToggleState = true, Mode = "Toggle", Text = "XRAY", NoUI = false })
+	:OnChanged(function()
+		XRAY22 = Toggles.XRAY.Value
+		if XRAY22 then
+			for i, v in pairs(game:GetDescendants()) do
+				if v:FindFirstChild("Hitbox") then
+					v.Hitbox.Transparency = 0.6
+				end
+			end
+		else
+			for i, v in pairs(game:GetDescendants()) do
+				if v:FindFirstChild("Hitbox") then
+					v.Hitbox.Transparency = 0
+				end
+			end
+		end
+	end)
+
+
+
+
+
 local CustomHitsoundsTabBox = MiscTab:AddLeftTabbox("Custom Hitsounds")
 local PlayerHitsoundsTab = CustomHitsoundsTabBox:AddTab("Player Hitsounds")
 local NatureHitsoundsTab = CustomHitsoundsTabBox:AddTab("Nature Hitsounds")
