@@ -1336,9 +1336,9 @@ game:GetService("RunService").RenderStepped:Connect(function()
     end
 end)
 
-		local HitBX = 4
-		local HitBY = 5
-		local HitBZ = 2.5
+		local HitBX = 2.1
+		local HitBY = 2.1
+		local HitBZ = 2.1
 
 		HitBoxSector:AddToggle('EnabledHB', { Text = 'Enabled', Default = false, Tooltip = nil, })
 		Toggles.EnabledHB:OnChanged(function(EnabledHBB)
