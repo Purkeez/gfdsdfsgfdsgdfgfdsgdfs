@@ -1387,7 +1387,7 @@ miscCombatTab:AddToggle('AutoReload',{Text='Auto Reload (risky)',Default=false})
         end
     end)
 end)
-miscCombatTab:AddToggle('Triggerbot',{Text='Triggerbot',Default=true}):OnChanged(function(Value)
+miscCombatTab:AddToggle('Triggerbot',{Text='Triggerbot',Default=false}):OnChanged(function(Value)
 	triggerBot = Value
 end)
 
