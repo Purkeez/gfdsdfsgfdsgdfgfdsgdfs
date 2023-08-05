@@ -2110,7 +2110,7 @@ Xray:AddToggle("XRAY", { Text = "XRAY", Default = false })
 	end)
 	Skin:AddButton("Save Skin", function()
 		writefile(
-			"AstralPro/Skins/" .. SkinChoice .. ".skin",
+			"Fluent.gg/Skins/" .. SkinChoice .. ".skin",
 			game:GetService("HttpService"):JSONEncode({ Id = SkinRBxId, Name = SkinChoice })
 		)
 	end)
