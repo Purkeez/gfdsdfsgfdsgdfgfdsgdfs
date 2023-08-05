@@ -1,3 +1,11 @@
+local config = Instance.new("Folder")
+config.Name = "Monkey"
+config.Parent = workspace
+
+local StorageESPAdornee = Instance.new("Folder")
+StorageESPAdornee.Name = "StorageESPAdornee"
+StorageESPAdornee.Parent = workspace:WaitForChild("Monkey")
+
 local repo = 'https://raw.githubusercontent.com/violin-suzutsuki/LinoriaLib/main/'
 
 local Library = loadstring(game:HttpGet(repo .. 'Library.lua'))()
@@ -1375,6 +1383,8 @@ end)
 			print(HitBZ)
 		end)
 		
+
+
 		
 miscCombatTab:AddToggle('AutoReload',{Text='Auto Reload (risky)',Default=false}):OnChanged(function(Value)
     task.spawn(function()
@@ -1480,11 +1490,28 @@ local instaEquipTog = false
 local noSpreadTog = false
 local instaReloadTog = false
 
+
 local firerateMulti = 1
 local autoFireType = 'auto'
 local equipTime = 0
 local reloadTime = 0
 
+
+local Recoil = getrenv()._G.modules.Camera.Recoil
+GunModsTab:AddToggle("RecoilToggle", { Text = "No Recoil (Cant Toggle Off)", Default = false }):OnChanged(function(Value)
+	getrenv()._G.modules.Camera.Recoil = function(...)
+		local args = { ... }
+		if Value then
+			args[1].cameraY = 0
+			args[1].cameraX = 0
+			args[1].push = 0
+			args[1].cameraXShake = 0
+			args[1].rotSpeed = 0
+			args[1].lerp = 0
+		end
+		return Recoil(...)
+	end
+end)
 
 GunModsTab:AddToggle('noSwayT',{Text='No Sway',Default=false}):OnChanged(function(Value)
 	noSwayTog = Value
@@ -1599,6 +1626,7 @@ local Visual = Window:AddTab('Visuals')
 local PlayerVisualTabbox = Visual:AddLeftTabbox()
 local PlayerVisualTab = PlayerVisualTabbox:AddTab('ESP')
 local PlayerSettingsVisualTab = PlayerVisualTabbox:AddTab('Settings')
+
 
 PlayerVisualTab:AddToggle('Boxes',{Text='Box',Default=false}):AddColorPicker('BoxesColor',{Default=Color3.fromRGB(206,250,5),Title='Color'})
 PlayerVisualTab:AddToggle('Sleeping',{Text='Sleeping or awake',Default=false}):AddColorPicker('SleepingColor',{Default=Color3.fromRGB(206,250,5),Title='Color'})
@@ -1728,6 +1756,87 @@ local settings1 = _G.SettingsOre
 local OreVisualTabbox = Visual:AddRightTabbox()
 local OreVisualTab = OreVisualTabbox:AddTab('Ore ESP')
 local OreSettingsVisualTab = OreVisualTabbox:AddTab('Settings')
+local World = OreVisualTabbox:AddTab("Crate Esp")
+
+-- STORAGE
+World:AddToggle("STORAGE", { Text = "Crate ESP", Default = false }):OnChanged(function(monkey99)
+	if monkey99 then
+		local function onPartAdded(part)
+			if
+				part:IsA("Part")
+				and part.BrickColor == BrickColor.new("Linen")
+				and part.Material == Enum.Material.WoodPlanks
+			then
+				local parent = part.Parent
+				if parent and parent:IsA("Model") and #parent:GetChildren() == 2 then
+					local MilitaryEsp = Instance.new("BoxHandleAdornment")
+					MilitaryEsp.Adornee = part
+					MilitaryEsp.AlwaysOnTop = true
+					MilitaryEsp.ZIndex = 0
+					MilitaryEsp.Size = part.Size
+					MilitaryEsp.Name = "MilitaryCrate"
+					MilitaryEsp.Transparency = 0.3
+					MilitaryEsp.Color = BrickColor.new("Dark Royal blue")
+					MilitaryEsp.Parent = workspace.Monkey.StorageESPAdornee
+				end
+			end
+		end
+
+		workspace.DescendantAdded:Connect(onPartAdded)
+
+		wait(1.5)
+
+		local parts = workspace:GetDescendants()
+		local meshes = {}
+		for _, part in ipairs(parts) do
+			if
+				part:IsA("UnionOperation")
+				and part.BrickColor == BrickColor.new("Cashmere")
+				and part.Material == Enum.Material.Plastic
+			then
+				local PartCrateEsp = Instance.new("BoxHandleAdornment")
+				PartCrateEsp.Adornee = part
+				PartCrateEsp.AlwaysOnTop = true
+				PartCrateEsp.ZIndex = 0
+				PartCrateEsp.Size = part.Size
+				PartCrateEsp.Name = "PartCrate"
+				PartCrateEsp.Transparency = 0.3
+				PartCrateEsp.Color = BrickColor.new("Bright yellow")
+				PartCrateEsp.Parent = workspace.Monkey.StorageESPAdornee
+			end
+		end
+
+		local function onPartAdded(part)
+			if
+				part:IsA("UnionOperation")
+				and part.BrickColor == BrickColor.new("Cashmere")
+				and part.Material == Enum.Material.Plastic
+			then
+				local UpdatePartCrateEsp = Instance.new("BoxHandleAdornment")
+				UpdatePartCrateEsp.Adornee = part
+				UpdatePartCrateEsp.AlwaysOnTop = true
+				UpdatePartCrateEsp.ZIndex = 0
+				UpdatePartCrateEsp.Size = part.Size
+				UpdatePartCrateEsp.Name = "PartCrate"
+				UpdatePartCrateEsp.Transparency = 0.3
+				UpdatePartCrateEsp.Color = BrickColor.new("Bright yellow")
+				UpdatePartCrateEsp.Parent = workspace.Monkey.StorageESPAdornee
+			end
+		end
+
+		workspace.DescendantAdded:Connect(onPartAdded)
+	else
+		for _, v in ipairs(workspace.Monkey.StorageESPAdornee:GetDescendants()) do
+			v:Destroy()
+		end
+	end
+end)
+
+
+
+
+
+
 OreVisualTab:AddLabel('Iron Color'):AddColorPicker('IronColor', { Default = Color3.fromRGB(199, 172, 120), Title = 'Color', })
 Options.IronColor:OnChanged(function(Value)
 	settings1.iron.colour = Value
@@ -1907,6 +2016,9 @@ local MiscTab = Window:AddTab('Misc')
 
 local Xray = MiscTab:AddLeftGroupbox('Xray')
 
+
+
+
 local XRAY22 = false
 Xray:AddToggle("XRAY", { Text = "XRAY", Default = false })
 	:AddKeyPicker("XRAYKey", { Default = "T", SyncToggleState = true, Mode = "Toggle", Text = "XRAY", NoUI = false })
@@ -1927,8 +2039,98 @@ Xray:AddToggle("XRAY", { Text = "XRAY", Default = false })
 		end
 	end)
 
+    local CrateEspTabbox = Visual:AddRightTabbox()
+	local Skin = CrateEspTabbox:AddTab("Skins")
 
-
+	-- SKIN Changer
+	local SkinChoice = "Galaxy"
+	local SkinRBxId = 0
+	local SkinsEnabled = false
+	
+	local Framework = {
+		Settings = { FullBright = false, Fov = 90, LocalChams = false, LocalGunChams = false },
+		SkinChanger = { SkinsEnabled = false, SkinChoice = "Galaxy", SkinName = "Float", SkinRBXAssetId = 12319249626 },
+	}
+	function Framework:CheckSkins()
+		local tbl = {}
+		for i, v in pairs(game:GetService("ReplicatedStorage").ItemSkins:GetChildren()) do
+			table.insert(tbl, v.Name)
+		end
+		return tbl
+	end
+	function Framework:SetCammo(SkinName)
+		if
+			not require(game:GetService("ReplicatedStorage").ItemConfigs[getrenv()._G.modules.FPS.GetEquippedItem().id]).HandModel
+		then
+			return
+		end
+		local GunName = require(
+			game:GetService("ReplicatedStorage").ItemConfigs[getrenv()._G.modules.FPS.GetEquippedItem().id]
+		).HandModel
+		if table.find(Framework:CheckSkins(), GunName) then
+			local SkinFolder = game:GetService("ReplicatedStorage").ItemSkins[GunName]
+			if game:GetService("ReplicatedStorage").ItemSkins[GunName]:FindFirstChild(GunName .. "_" .. SkinName) then
+				local SkinChosen = game:GetService("ReplicatedStorage").ItemSkins[GunName][GunName .. "_" .. SkinName]
+				require(SkinChosen).ApplyToModel(game:GetService("Workspace").Ignore.FPSArms.HandModel)
+			end
+		end
+	end
+	
+	game:GetService("Workspace").Ignore.FPSArms.ChildAdded:Connect(function()
+		if game:GetService("Workspace").Ignore.FPSArms:WaitForChild("HandModel") and SkinsEnabled == true then
+			Framework:SetCammo(SkinChoice)
+		end
+	end)
+	
+	for i, v in pairs(game:GetService("ReplicatedStorage").ItemSkins:GetChildren()) do
+		if v:FindFirstChild(v.Name .. "_" .. "Galaxy") then
+			local clone = v:FindFirstChild(v.Name .. "_" .. "Galaxy"):Clone()
+			clone.Parent = game:GetService("ReplicatedStorage").ItemSkins[v.Name]
+			clone.Name = v.Name .. "_Frozen"
+		end
+	end
+	
+	Skin:AddToggle("SkinsEnabled", { Text = "Enabled", Default = false })
+	Skin:AddDropdown("SkinChoice", { Values = { "Galaxy" }, Default = 1, Multi = false, Text = "Skin:" })
+	Skin:AddInput(
+		"SkinName",
+		{ Default = "Skin", Numeric = false, Finished = false, Text = "Name:", Placeholder = "Skin Name" }
+	)
+	Skin:AddInput(
+		"SkinRBXAssetId",
+		{ Default = 0, Numeric = true, Finished = true, Text = "Asset Id:", Placeholder = "RbxId" }
+	)
+	Skin:AddButton("Load Skin", function()
+		for i, v in pairs(game:GetService("ReplicatedStorage").ItemSkins:GetChildren()) do
+			if v:FindFirstChild(v.Name .. "_" .. "Galaxy") and not v:FindFirstChild(v.Name .. "_" .. SkinChoice) then
+				local clone = v:FindFirstChild(v.Name .. "_" .. "Galaxy"):Clone()
+				clone.Parent = game:GetService("ReplicatedStorage").ItemSkins[v.Name]
+				clone.Name = v.Name .. "_" .. SkinChoice
+				setconstant(require(clone).ApplyToModel, 3, "rbxassetid://" .. SkinRBxId)
+			end
+		end
+		Framework:SetCammo(SkinChoice)
+	end)
+	Skin:AddButton("Save Skin", function()
+		writefile(
+			"AstralPro/Skins/" .. SkinChoice .. ".skin",
+			game:GetService("HttpService"):JSONEncode({ Id = SkinRBxId, Name = SkinChoice })
+		)
+	end)
+	
+	Toggles.SkinsEnabled:OnChanged(function()
+		SkinsEnabled = Toggles.SkinsEnabled.Value
+	end)
+	Options.SkinName:OnChanged(function()
+		SkinChoice = Options.SkinName.Value
+	end)
+	Options.SkinRBXAssetId:OnChanged(function()
+		SkinRBxId = Options.SkinRBXAssetId.Value
+	end)
+	Options.SkinChoice:OnChanged(function()
+		SkinChoice = Options.SkinChoice.Value
+	end)
+	
 
 
 local CustomHitsoundsTabBox = MiscTab:AddLeftTabbox("Custom Hitsounds")
@@ -2325,22 +2527,6 @@ game:GetService("LogService").MessageOut:Connect(function(message)
     end
 end)
 
-function Functions:ToggleLeaves(Trans)
-    for i,v in pairs(getrenv()._G.modules.Entity.List) do
-        if v.typ == "Tree1" or v.typ == "Tree2" then
-            v.model.Leaves.Transparency = Trans
-        end
-    end
-end
-
-game:GetService("Workspace").ChildAdded:Connect(function(child)
-    if child:FindFirstChild("Leaves") then
-		Functions:ToggleLeaves(1)
-    end
-end)
-
-sethiddenproperty(game:GetService("Workspace").Terrain,"Decoration",false)
-Functions:ToggleLeaves(1)
 
 local noSway; noSway = hookfunction(getupvalues(getrenv()._G.modules.FPS.ToolControllers.RangedWeapon.PlayerFire)[1], function(...)
     arg = {...}
