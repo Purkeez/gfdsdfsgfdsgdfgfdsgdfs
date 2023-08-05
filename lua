@@ -1496,7 +1496,6 @@ local autoFireType = 'auto'
 local equipTime = 0
 local reloadTime = 0
 
-
 local Recoil = getrenv()._G.modules.Camera.Recoil
 GunModsTab:AddToggle("RecoilToggle", { Text = "No Recoil (Cant Toggle Off)", Default = false }):OnChanged(function(Value)
 	getrenv()._G.modules.Camera.Recoil = function(...)
@@ -1513,9 +1512,7 @@ GunModsTab:AddToggle("RecoilToggle", { Text = "No Recoil (Cant Toggle Off)", Def
 	end
 end)
 
-GunModsTab:AddToggle('noSwayT',{Text='No Sway',Default=false}):OnChanged(function(Value)
-	noSwayTog = Value
-end)
+
 GunModsTab:AddToggle('noAimOffsetT',{Text='No Aiming-offset',Default=false}):OnChanged(function(Value)
 	noAimOffsetTog = Value
 end)
@@ -2527,24 +2524,6 @@ game:GetService("LogService").MessageOut:Connect(function(message)
     end
 end)
 
-
-local noSway; noSway = hookfunction(getupvalues(getrenv()._G.modules.FPS.ToolControllers.RangedWeapon.PlayerFire)[1], function(...)
-    arg = {...}
-    if GunModsEnabled and noSwayTog == true then
-    arg[2]['AimRecoil']['push'] = 0
-    arg[2]['AimRecoil']['cameraX'] = 0
-    arg[2]['AimRecoil']['cameraY'] = 0
-    arg[2]['AimRecoil']['cameraXShake'] = 0
-    --
-    arg[2]['HipRecoil']['push'] = 0
-    arg[2]['HipRecoil']['cameraX'] = 0
-    arg[2]['HipRecoil']['cameraY'] = 0
-    arg[2]['HipRecoil']['cameraXShake'] = 0
-    return noSway(unpack(arg))
-    else
-    return noSway(...)
-    end
-end)
 local noOffset; noOffset = hookfunction(getrenv()._G.modules.Camera.SetVMAimingOffset, function(...)
     arg = {...}
     if GunModsEnabled and noAimOffsetTog == true then
