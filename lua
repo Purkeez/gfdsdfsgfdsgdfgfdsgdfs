@@ -6,6 +6,13 @@ local StorageESPAdornee = Instance.new("Folder")
 StorageESPAdornee.Name = "StorageESPAdornee"
 StorageESPAdornee.Parent = workspace:WaitForChild("Monkey")
 
+local cache, OreCache = {}, {}
+local AllowedOres, AllowedItems =
+	{ "StoneOre", "NitrateOre", "IronOre" },
+	{ "PartsBox", "MilitaryCrate", "SnallBox", "SnallBox", "Backpack", "VendingMachine" }
+
+
+
 local repo = 'https://raw.githubusercontent.com/violin-suzutsuki/LinoriaLib/main/'
 
 local Library = loadstring(game:HttpGet(repo .. 'Library.lua'))()
@@ -2011,7 +2018,7 @@ end)
 
 local MiscTab = Window:AddTab('Misc')
 
-local Xray = MiscTab:AddLeftGroupbox('Xray')
+local Xray = MiscTab:AddRightGroupbox('Xray')
 
 
 
