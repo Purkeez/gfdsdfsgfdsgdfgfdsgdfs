@@ -2013,7 +2013,7 @@ local TrashTalkTab = TrashTalkTabBox:AddTab('trash talk')
 
 local Trashtalk = false
 local Chats = {
-["Fluent.gg"] = {"do you not own Fluent.gg?", "Get rich get Flunet.gg!", "why dont u own Fluent.gg? Ur trash.", "Fluent.gg = life", "Go cry go get Fluent.gg", "# winning with fluent.gg", "Hit all my shots you didnt.", "Beamed, Shoulda had Fluent.gg", "ez kill with fluent.gg", "where were u looking?"};
+["Fluent.gg"] = {"do you not own Fluent.gg?", "Get better loser", "you sum dooki but fr", "Fluent.gg = life", "Go cry to mommy to buy u Fluent.gg", "#winning with fluent.gg", "'How did i die?' shoulda bought fluent bud", "You got tripled? Shoulda had Fluent.gg", "oh hell nah man what da f man", "what're u aiming at?"};
 }
 
 local _Network = getrenv()._G.modules.Network
